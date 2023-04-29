@@ -8,11 +8,5 @@
   "author": {
     "name": "Varneon",
     "url": "https://github.com/Varneon"
-  },
-  "dependencies": {
-    "com.vrchat.udonsharp": "1.0.1"
-  },
-  "vpmDependencies": {
-    "com.vrchat.udonsharp": "1.x.x"
   }
 }
