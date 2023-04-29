@@ -4,7 +4,9 @@
 
 </div>
 
-Custom editors for VUdon prefab ecosystem
+Custom editor toolkit for VUdon prefab ecosystem
+
+![ExampleInspectors](https://user-images.githubusercontent.com/26690821/235307687-b30572bb-357f-4f0b-a06a-aa1b353072fd.png)
 
 # Installation
 
