@@ -1,6 +1,8 @@
 {
     "name": "Varneon.VUdon.Editors.Editor",
-    "references": [],
+    "references": [
+        "Varneon.VUdon.Editors.Runtime"
+    ],
     "includePlatforms": [
         "Editor"
     ],
