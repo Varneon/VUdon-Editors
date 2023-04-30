@@ -1,12 +1,11 @@
-﻿using System;
+﻿using UnityEngine;
 
 namespace Varneon.VUdon.Editors
 {
     /// <summary>
     /// Add this attribute to set a custom label for a field
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field)]
-    public class FieldLabelAttribute : Attribute
+    public class FieldLabelAttribute : PropertyAttribute
     {
         /// <summary>
         /// The custom field name
@@ -16,6 +15,8 @@ namespace Varneon.VUdon.Editors
         public FieldLabelAttribute(string fieldName)
         {
             FieldName = fieldName;
+
+            this.order = 1;
         }
     }
 }
