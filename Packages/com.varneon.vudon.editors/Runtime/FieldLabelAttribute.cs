@@ -1,20 +1,29 @@
-﻿using UnityEngine;
+﻿using System;
 
 namespace Varneon.VUdon.Editors
 {
     /// <summary>
     /// Add this attribute to set a custom label for a field
     /// </summary>
-    public class FieldLabelAttribute : PropertyAttribute
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public class FieldLabelAttribute : MultiPropertyAttribute
     {
-        /// <summary>
-        /// The custom field name
-        /// </summary>
-        public string FieldName;
+#if !COMPILER_UDONSHARP
+        public override FieldAttributeType Type => FieldAttributeType.Label;
+#endif
 
-        public FieldLabelAttribute(string fieldName)
+        /// <summary>
+        /// The custom field label
+        /// </summary>
+        public readonly string Label;
+
+        /// <summary>
+        /// Add this attribute to set a custom label for a field
+        /// </summary>
+        /// <param name="label">The custom field label</param>
+        public FieldLabelAttribute(string label)
         {
-            FieldName = fieldName;
+            Label = label;
 
             this.order = 1;
         }
