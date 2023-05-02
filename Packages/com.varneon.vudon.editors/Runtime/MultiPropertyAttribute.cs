@@ -37,6 +37,16 @@ namespace Varneon.VUdon.Editors
         internal bool isRange;
 
         /// <summary>
+        /// The minimum allowed value
+        /// </summary>
+        internal float min;
+
+        /// <summary>
+        /// The maximum allowed value
+        /// </summary>
+        internal float max;
+
+        /// <summary>
         /// Does the property have disable attribute
         /// </summary>
         internal bool disable;

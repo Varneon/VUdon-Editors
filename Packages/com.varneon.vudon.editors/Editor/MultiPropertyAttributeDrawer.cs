@@ -47,6 +47,9 @@ namespace Varneon.VUdon.Editors.Editor
                         // Set range for a float or integer field
                         case FieldAttributeType.Range:
                             multiAttribute.isRange = true;
+                            FieldRangeAttribute rangeAttribute = (FieldRangeAttribute)attribute;
+                            multiAttribute.min = rangeAttribute.Min;
+                            multiAttribute.max = rangeAttribute.Max;
                             break;
 
                         // Add warning or error for null reference on ObjectField
@@ -75,15 +78,13 @@ namespace Varneon.VUdon.Editors.Editor
             // Add alternative handling to ranged fields
             if (multiAttribute.isRange)
             {
-                FieldRangeAttribute rangeAttribute = (FieldRangeAttribute)multiAttribute;
-
                 if (property.propertyType == SerializedPropertyType.Float)
                 {
-                    EditorGUI.Slider(position, property, rangeAttribute.Min, rangeAttribute.Max, label);
+                    EditorGUI.Slider(position, property, multiAttribute.min, multiAttribute.max, label);
                 }
                 else if (property.propertyType == SerializedPropertyType.Integer)
                 {
-                    EditorGUI.IntSlider(position, property, (int)rangeAttribute.Min, (int)rangeAttribute.Max, label);
+                    EditorGUI.IntSlider(position, property, (int)multiAttribute.min, (int)multiAttribute.max, label);
                 }
                 else
                 {
