@@ -101,11 +101,28 @@ namespace Varneon.VUdon.Editors.Editor
             }
         }
 
+        /// <summary>
+        /// Gets called before the inspector draws all of the default fields
+        /// </summary>
+        protected virtual void OnPreDrawFields() { }
+
+        /// <summary>
+        /// Gets called after the inspector is one drawing all of the default fields
+        /// </summary>
+        protected virtual void OnPostDrawFields() { }
+
+        /// <summary>
+        /// Gets called after the inspector has drawn the default footer
+        /// </summary>
+        protected virtual void OnPostDrawFooter() { }
+
         public sealed override void OnInspectorGUI()
         {
             header.Draw(editorDarkMode);
 
             serializedObject.Update();
+
+            OnPreDrawFields();
 
             for (int g = 0; g < propertyGroups.Count; g++)
             {
@@ -170,7 +187,11 @@ namespace Varneon.VUdon.Editors.Editor
                 }
             }
 
+            OnPostDrawFields();
+
             if (drawFooter) { DrawInspectorFooter(); }
+
+            OnPostDrawFooter();
         }
 
         private void DrawInspectorFooter()
