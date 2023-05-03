@@ -50,7 +50,7 @@ namespace Varneon.VUdon.Editors.Editor
         }
 
         /// <summary>
-        /// Draw the inspector during OnInspectorGUI
+        /// Draw the header during OnInspectorGUI
         /// </summary>
         /// <param name="editorDarkMode">Is the editor currently in dark mode</param>
         internal void Draw(bool editorDarkMode)
