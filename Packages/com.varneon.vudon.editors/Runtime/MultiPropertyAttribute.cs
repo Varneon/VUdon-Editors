@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 
 namespace Varneon.VUdon.Editors
 {
@@ -52,11 +54,6 @@ namespace Varneon.VUdon.Editors
         internal bool disable;
 
         /// <summary>
-        /// Should the property disabled state be inverted
-        /// </summary>
-        internal bool disableWhenTrue;
-
-        /// <summary>
         /// Should the property warn about null values on an ObjectField
         /// </summary>
         internal bool nullWarning;
@@ -66,11 +63,32 @@ namespace Varneon.VUdon.Editors
         /// </summary>
         internal bool nullError;
 
-#if UNITY_EDITOR
         /// <summary>
-        /// Property for checking the state for disabled scope 
+        /// Function for checking whether the field should be enabled or not
         /// </summary>
-        internal UnityEditor.SerializedProperty disableProperty;
+        internal Func<bool> disabledCheckFunction;
+
+#if UNITY_EDITOR
+        internal static Func<bool> DisabledCheckFunction(LogicType logic, UnityEditor.SerializedProperty[] properties)
+        {
+            switch (logic)
+            {
+                case LogicType.AND:
+                    return () => properties.All(p => p.boolValue);
+                case LogicType.OR:
+                    return () => properties.Any(p => p.boolValue);
+                case LogicType.NAND:
+                    return () => properties.Any(p => !p.boolValue);
+                case LogicType.NOR:
+                    return () => !properties.Any(p => p.boolValue);
+                case LogicType.XOR:
+                    return () => properties.Count(p => p.boolValue) == 1;
+                case LogicType.XNOR:
+                    return () => properties.All(p => p.boolValue) || properties.All(p => !p.boolValue);
+                default:
+                    throw new NotImplementedException();
+            }
+        }
 #endif
 #endif
     }

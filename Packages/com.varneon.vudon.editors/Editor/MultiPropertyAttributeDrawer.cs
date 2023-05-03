@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace Varneon.VUdon.Editors.Editor
@@ -40,8 +41,7 @@ namespace Varneon.VUdon.Editors.Editor
                         case FieldAttributeType.Disable:
                             multiAttribute.disable = true;
                             FieldDisableAttribute disableAttribute = (FieldDisableAttribute)attribute;
-                            multiAttribute.disableProperty = property.serializedObject.FindProperty(disableAttribute.Property);
-                            multiAttribute.disableWhenTrue = disableAttribute.WhenTrue;
+                            multiAttribute.disabledCheckFunction = MultiPropertyAttribute.DisabledCheckFunction(disableAttribute.Logic, disableAttribute.Properties.Select(p => property.serializedObject.FindProperty(p)).ToArray());
                             break;
 
                         // Set range for a float or integer field
@@ -72,7 +72,7 @@ namespace Varneon.VUdon.Editors.Editor
             // Begin disabled group if field has disable attribute
             if (multiAttribute.disable)
             {
-                EditorGUI.BeginDisabledGroup(multiAttribute.disableWhenTrue == multiAttribute.disableProperty.boolValue);
+                EditorGUI.BeginDisabledGroup(!multiAttribute.disabledCheckFunction.Invoke());
             }
 
             // Add alternative handling to ranged fields

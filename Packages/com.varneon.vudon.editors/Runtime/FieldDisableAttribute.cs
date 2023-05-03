@@ -3,7 +3,7 @@
 namespace Varneon.VUdon.Editors
 {
     /// <summary>
-    /// Add this attribute to disable a field based on boolean field's state
+    /// Add this attribute to disable a field if the condition isn't met based on boolean properties
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class FieldDisableAttribute : MultiPropertyAttribute
@@ -13,25 +13,31 @@ namespace Varneon.VUdon.Editors
 #endif
 
         /// <summary>
+        /// Logic for enabling the field
+        /// </summary>
+        public readonly LogicType Logic;
+
+        /// <summary>
         /// Name of the boolean field
         /// </summary>
-        public readonly string Property;
+        public readonly string[] Properties;
 
         /// <summary>
-        /// Should the field be disabled when the value is true
+        /// Add this attribute to disable a field if the condition isn't met based on boolean properties
         /// </summary>
-        public readonly bool WhenTrue;
+        /// <param name="properties">Names of the boolean fields</param>
+        public FieldDisableAttribute(params string[] properties) : this(LogicType.AND, properties) { }
 
         /// <summary>
-        /// Add this attribute to disable a field based on boolean property's state
+        /// Add this attribute to disable a field if the condition isn't met based on boolean properties
         /// </summary>
-        /// <param name="property">Name of the boolean field</param>
-        /// <param name="whenTrue">Should the field be disabled when the value is true</param>
-        public FieldDisableAttribute(string property, bool whenTrue = false)
+        /// <param name="logic">Logic gate type for disable</param>
+        /// <param name="properties">Names of the boolean fields</param>
+        public FieldDisableAttribute(LogicType logic, params string[] properties)
         {
-            Property = property;
+            Logic = logic;
 
-            WhenTrue = whenTrue;
+            Properties = properties;
 
             this.order = 1;
         }
