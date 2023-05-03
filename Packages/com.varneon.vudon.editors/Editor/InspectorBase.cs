@@ -239,7 +239,7 @@ namespace Varneon.VUdon.Editors.Editor
             }
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if (string.IsNullOrWhiteSpace(foldoutPersistenceKey)) { return; }
 
