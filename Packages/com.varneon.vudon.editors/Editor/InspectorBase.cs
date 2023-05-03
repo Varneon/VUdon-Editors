@@ -31,11 +31,20 @@ namespace Varneon.VUdon.Editors.Editor
 
         private bool editorDarkMode;
 
+        private string foldoutPersistenceKey;
+
         private InspectorHeader header;
 
         protected virtual void OnEnable()
         {
             editorDarkMode = EditorGUIUtility.isProSkin;
+
+            // Try getting the foldout persistence key safely in case it hasn't been implemented
+            try
+            {
+                foldoutPersistenceKey = FoldoutPersistenceKey;
+            }
+            catch { }
 
             // Try getting the header safely in case it hasn't been implemented
             try
@@ -98,7 +107,7 @@ namespace Varneon.VUdon.Editors.Editor
 
             foldoutStates = new bool[propertyGroups.Count];
 
-            if (EditorPrefs.HasKey(FoldoutPersistenceKey))
+            if (!string.IsNullOrWhiteSpace(foldoutPersistenceKey) && EditorPrefs.HasKey(foldoutPersistenceKey))
             {
                 int states = EditorPrefs.GetInt(FoldoutPersistenceKey);
 
@@ -230,6 +239,8 @@ namespace Varneon.VUdon.Editors.Editor
 
         private void OnDestroy()
         {
+            if (string.IsNullOrWhiteSpace(foldoutPersistenceKey)) { return; }
+
             if (foldoutStates == null) { return; }
 
             int states = 0;
@@ -242,7 +253,7 @@ namespace Varneon.VUdon.Editors.Editor
                 }
             }
 
-            EditorPrefs.SetInt(FoldoutPersistenceKey, states);
+            EditorPrefs.SetInt(foldoutPersistenceKey, states);
         }
     }
 }
