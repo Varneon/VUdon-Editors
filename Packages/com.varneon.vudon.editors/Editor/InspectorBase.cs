@@ -37,7 +37,15 @@ namespace Varneon.VUdon.Editors.Editor
         {
             editorDarkMode = EditorGUIUtility.isProSkin;
 
-            header = Header;
+            // Try getting the header safely in case it hasn't been implemented
+            try
+            {
+                header = Header;
+            }
+            catch
+            {
+                Debug.LogError("Exception occurred when trying to get inspector header! Make sure to follow instructions on the wiki: https://github.com/Varneon/VUdon-Editors/wiki/Creating-a-new-custom-inspector#2-2-provide-a-new-header-for-the-inspector");
+            }
 
             drawFooter = TryBuildFooterString(out footer);
 
@@ -118,7 +126,7 @@ namespace Varneon.VUdon.Editors.Editor
 
         public sealed override void OnInspectorGUI()
         {
-            header.Draw(editorDarkMode);
+            header?.Draw(editorDarkMode);
 
             serializedObject.Update();
 
