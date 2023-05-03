@@ -78,13 +78,15 @@ namespace Varneon.VUdon.Editors.Editor
 
                 if (Attribute.IsDefined(fieldInfo, typeof(FoldoutHeaderAttribute)))
                 {
-                    foldoutHeader = fieldInfo.GetCustomAttribute<FoldoutHeaderAttribute>().Header;
+                    FoldoutHeaderAttribute foldoutAttribute = fieldInfo.GetCustomAttribute<FoldoutHeaderAttribute>();
+
+                    foldoutHeader = foldoutAttribute.Header;
 
                     if (!string.IsNullOrWhiteSpace(foldoutHeader) && !foldoutHeaders.Contains(foldoutHeader))
                     {
                         foldoutHeaders.Add(foldoutHeader);
 
-                        propertyGroups.Add(new FoldoutSerializedPropertyGroup(foldoutHeader));
+                        propertyGroups.Add(new FoldoutSerializedPropertyGroup(foldoutHeader, foldoutAttribute.Tooltip));
                     }
                 }
 
@@ -153,7 +155,7 @@ namespace Varneon.VUdon.Editors.Editor
                 {
                     using (EditorGUI.ChangeCheckScope scope = new EditorGUI.ChangeCheckScope())
                     {
-                        expanded = EditorGUILayout.BeginFoldoutHeaderGroup(expanded, ((FoldoutSerializedPropertyGroup)group).FoldoutName);
+                        expanded = EditorGUILayout.BeginFoldoutHeaderGroup(expanded, ((FoldoutSerializedPropertyGroup)group).LabelContent);
 
                         if (scope.changed)
                         {

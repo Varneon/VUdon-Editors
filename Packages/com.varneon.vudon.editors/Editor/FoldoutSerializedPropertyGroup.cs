@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
 
 namespace Varneon.VUdon.Editors
 {
@@ -10,15 +11,15 @@ namespace Varneon.VUdon.Editors
     {
         public bool IsFoldout => true;
 
-        public string FoldoutName { get; set; }
+        public readonly GUIContent LabelContent;
 
         public List<SerializedProperty> Properties => _properties;
 
         private readonly List<SerializedProperty> _properties;
 
-        public FoldoutSerializedPropertyGroup(string name)
+        public FoldoutSerializedPropertyGroup(string name, string tooltip = null)
         {
-            FoldoutName = name;
+            LabelContent = new GUIContent(name, tooltip);
 
             _properties = new List<SerializedProperty>();
         }

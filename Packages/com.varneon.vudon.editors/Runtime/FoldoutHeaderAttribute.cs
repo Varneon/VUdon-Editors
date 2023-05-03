@@ -13,9 +13,13 @@ namespace Varneon.VUdon.Editors
         /// </summary>
         public string Header { get; }
 
-        public FoldoutHeaderAttribute(string header)
+        public readonly string Tooltip;
+
+        public FoldoutHeaderAttribute(string header, string tooltip = null)
         {
             Header = header;
+
+            Tooltip = tooltip;
         }
     }
 }
