@@ -11,7 +11,7 @@ namespace Varneon.VUdon.Editors
         /// <summary>
         /// The header text
         /// </summary>
-        public string Header { get; }
+        public readonly string Header;
 
         public readonly string Tooltip;
 
