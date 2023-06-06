@@ -1,6 +1,6 @@
 <div>
 
-# [VUdon](https://github.com/Varneon/VUdon) - Custom Editors [![GitHub Repo stars](https://img.shields.io/github/stars/Varneon/Repository-Template-VUdon?style=flat&label=Stars)](https://github.com/Varneon/VUdon-Editors/stargazers) [![GitHub all releases](https://img.shields.io/github/downloads/Varneon/Repository-Template-VUdon/total?color=blue&label=Downloads&style=flat)](https://github.com/Varneon/VUdon-Editors/releases) [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/Varneon/Repository-Template-VUdon?color=blue&label=Release&sort=semver&style=flat)](https://github.com/Varneon/VUdon-Editors/releases/latest)
+# [VUdon](https://github.com/Varneon/VUdon) - Custom Editors [![GitHub Repo stars](https://img.shields.io/github/stars/Varneon/VUdon-Editors?style=flat&label=Stars)](https://github.com/Varneon/VUdon-Editors/stargazers) [![GitHub all releases](https://img.shields.io/github/downloads/Varneon/VUdon-Editors/total?color=blue&label=Downloads&style=flat)](https://github.com/Varneon/VUdon-Editors/releases) [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/Varneon/VUdon-Editors?color=blue&label=Release&sort=semver&style=flat)](https://github.com/Varneon/VUdon-Editors/releases/latest)
 
 </div>
 
