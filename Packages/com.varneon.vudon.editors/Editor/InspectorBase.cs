@@ -17,7 +17,10 @@ namespace Varneon.VUdon.Editors.Editor
         [SerializeField]
         private PackageManifest packageManifest;
 
-        protected abstract string FoldoutPersistenceKey { get; }
+        protected virtual string PersistenceKey => null;
+
+        [Obsolete("Use PersistenceKey instead")]
+        protected virtual string FoldoutPersistenceKey { get; }
 
         protected abstract InspectorHeader Header { get; }
 
@@ -31,7 +34,15 @@ namespace Varneon.VUdon.Editors.Editor
 
         private bool editorDarkMode;
 
-        private string foldoutPersistenceKey;
+        private string persistenceKey;
+
+        /// <summary>
+        /// Override this property to set the number of persistent booleans stored in preferences
+        /// </summary>
+        /// <returns></returns>
+        protected virtual int CustomPersistentBoolCount => 0;
+
+        protected bool[] customPersistentBools = new bool[0];
 
         private InspectorHeader header;
 
@@ -42,9 +53,23 @@ namespace Varneon.VUdon.Editors.Editor
             // Try getting the foldout persistence key safely in case it hasn't been implemented
             try
             {
-                foldoutPersistenceKey = FoldoutPersistenceKey;
+#pragma warning disable CS0618 // Type or member is obsolete
+                persistenceKey = FoldoutPersistenceKey;
+#pragma warning restore CS0618 // Type or member is obsolete
             }
             catch { }
+
+            if (string.IsNullOrWhiteSpace(persistenceKey))
+            {
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(PersistenceKey))
+                    {
+                        persistenceKey = PersistenceKey;
+                    }
+                }
+                catch { }
+            }
 
             // Try getting the header safely in case it hasn't been implemented
             try
@@ -109,13 +134,25 @@ namespace Varneon.VUdon.Editors.Editor
 
             foldoutStates = new bool[propertyGroups.Count];
 
-            if (!string.IsNullOrWhiteSpace(foldoutPersistenceKey) && EditorPrefs.HasKey(foldoutPersistenceKey))
+            if (!string.IsNullOrWhiteSpace(persistenceKey) && EditorPrefs.HasKey(persistenceKey))
             {
-                int states = EditorPrefs.GetInt(FoldoutPersistenceKey);
+                int states = EditorPrefs.GetInt(persistenceKey);
 
-                for (int i = 0; i < foldoutStates.Length; i++)
+                int foldoutCount = foldoutStates.Length;
+
+                for (int i = 0; i < foldoutCount; i++)
                 {
                     foldoutStates[i] = (states & (1 << i)) != 0;
+                }
+
+                if(CustomPersistentBoolCount > 0)
+                {
+                    customPersistentBools = new bool[CustomPersistentBoolCount];
+
+                    for (int i = 0; i < CustomPersistentBoolCount; i++)
+                    {
+                        customPersistentBools[i] = (states & (1 << (i + foldoutCount))) != 0;
+                    }
                 }
             }
         }
@@ -241,13 +278,15 @@ namespace Varneon.VUdon.Editors.Editor
 
         protected virtual void OnDestroy()
         {
-            if (string.IsNullOrWhiteSpace(foldoutPersistenceKey)) { return; }
+            if (string.IsNullOrWhiteSpace(persistenceKey)) { return; }
 
             if (foldoutStates == null) { return; }
 
             int states = 0;
 
-            for (int i = 0; i < foldoutStates.Length; i++)
+            int foldoutCount = foldoutStates.Length;
+
+            for (int i = 0; i < foldoutCount; i++)
             {
                 if (foldoutStates[i])
                 {
@@ -255,7 +294,18 @@ namespace Varneon.VUdon.Editors.Editor
                 }
             }
 
-            EditorPrefs.SetInt(foldoutPersistenceKey, states);
+            if (CustomPersistentBoolCount > 0)
+            {
+                for (int i = 0; i < CustomPersistentBoolCount; i++)
+                {
+                    if (customPersistentBools[i])
+                    {
+                        states |= 1 << (i + foldoutCount);
+                    }
+                }
+            }
+
+            EditorPrefs.SetInt(persistenceKey, states);
         }
     }
 }
