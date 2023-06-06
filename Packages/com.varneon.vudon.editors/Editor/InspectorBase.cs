@@ -172,7 +172,7 @@ namespace Varneon.VUdon.Editors.Editor
 
                         Rect rect = EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-                        GUI.Box(rect, string.Empty);
+                        if (editorDarkMode) { GUI.Box(rect, string.Empty); }
 
                         GUI.color = Color.white;
 
