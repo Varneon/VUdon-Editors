@@ -176,9 +176,9 @@ namespace Varneon.VUdon.Editors.Editor
         {
             header?.Draw(editorDarkMode);
 
-            serializedObject.Update();
-
             OnPreDrawFields();
+
+            serializedObject.Update();
 
             for (int g = 0; g < propertyGroups.Count; g++)
             {
