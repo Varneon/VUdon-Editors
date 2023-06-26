@@ -32,6 +32,8 @@ namespace Varneon.VUdon.Editors.Editor
 
         private string footer;
 
+        protected bool EditorDarkMode => editorDarkMode;
+
         private bool editorDarkMode;
 
         private string persistenceKey;
