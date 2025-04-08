@@ -8,5 +8,8 @@
   "author": {
     "name": "Varneon",
     "url": "https://github.com/Varneon"
+  },
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
   }
 }
