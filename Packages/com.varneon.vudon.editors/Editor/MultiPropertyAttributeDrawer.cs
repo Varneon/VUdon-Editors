@@ -102,7 +102,7 @@ namespace Varneon.VUdon.Editors.Editor
                 {
                     GUI.color = nullError ? Color.red : Color.yellow;
 
-                    label = new GUIContent(label.text, multiAttribute.nullError ? errorIcon : warningIcon);
+                    label.image = multiAttribute.nullError ? errorIcon : warningIcon;
                 }
 
                 position = EditorGUI.PrefixLabel(position, label);
@@ -113,7 +113,7 @@ namespace Varneon.VUdon.Editors.Editor
 
                 EditorGUI.indentLevel = 0;
 
-                EditorGUI.PropertyField(position, property, GUIContent.none);
+                EditorGUI.ObjectField(position, property, GUIContent.none);
 
                 EditorGUI.indentLevel = indentLevel;
             }
