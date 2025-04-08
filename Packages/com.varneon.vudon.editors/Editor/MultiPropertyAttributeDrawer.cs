@@ -34,7 +34,7 @@ namespace Varneon.VUdon.Editors.Editor
                     {
                         // Modify the property label
                         case FieldAttributeType.Label:
-                            multiAttribute.label = new GUIContent(((FieldLabelAttribute)attribute).Label);
+                            multiAttribute.label = new GUIContent(((FieldLabelAttribute)attribute).Label, label.tooltip);
                             break;
 
                         // Set the property to be disabled when another boolean property's state matches conditions
