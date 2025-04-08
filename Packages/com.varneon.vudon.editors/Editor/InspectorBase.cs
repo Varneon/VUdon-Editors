@@ -136,6 +136,8 @@ namespace Varneon.VUdon.Editors.Editor
 
             foldoutStates = new bool[propertyGroups.Count];
 
+            customPersistentBools = new bool[CustomPersistentBoolCount];
+
             if (!string.IsNullOrWhiteSpace(persistenceKey) && EditorPrefs.HasKey(persistenceKey))
             {
                 int states = EditorPrefs.GetInt(persistenceKey);
@@ -149,8 +151,6 @@ namespace Varneon.VUdon.Editors.Editor
 
                 if(CustomPersistentBoolCount > 0)
                 {
-                    customPersistentBools = new bool[CustomPersistentBoolCount];
-
                     for (int i = 0; i < CustomPersistentBoolCount; i++)
                     {
                         customPersistentBools[i] = (states & (1 << (i + foldoutCount))) != 0;
