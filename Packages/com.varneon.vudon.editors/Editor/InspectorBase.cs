@@ -174,6 +174,18 @@ namespace Varneon.VUdon.Editors.Editor
         /// </summary>
         protected virtual void OnPostDrawFooter() { }
 
+        /// <summary>
+        /// Gets called when serialized property group will begin to be drawn
+        /// </summary>
+        /// <param name="index"></param>
+        protected virtual void OnPreDrawPropertyGroup(int index) { }
+
+        /// <summary>
+        /// Gets called when serialized property group has finished drawing
+        /// </summary>
+        /// <param name="index"></param>
+        protected virtual void OnPostDrawPropertyGroup(int index) { }
+
         public sealed override void OnInspectorGUI()
         {
             header?.Draw(editorDarkMode);
@@ -218,6 +230,8 @@ namespace Varneon.VUdon.Editors.Editor
                         EditorGUI.indentLevel++;
                     }
 
+                    OnPreDrawPropertyGroup(g);
+
                     foreach (SerializedProperty property in group.Properties)
                     {
                         using (EditorGUI.ChangeCheckScope scope = new EditorGUI.ChangeCheckScope())
@@ -230,6 +244,8 @@ namespace Varneon.VUdon.Editors.Editor
                             }
                         }
                     }
+
+                    OnPostDrawPropertyGroup(g);
 
                     if (isFoldout)
                     {
