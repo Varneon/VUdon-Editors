@@ -1,7 +1,7 @@
 {
   "name": "com.varneon.vudon.editors",
   "displayName": "VUdon - Editors",
-  "version": "0.1.0-alpha.8",
+  "version": "0.2.0-alpha.1",
   "unity": "2022.3",
   "unityRelease": "6f1",
   "description": "Custom editors for VUdon prefab ecosystem",
