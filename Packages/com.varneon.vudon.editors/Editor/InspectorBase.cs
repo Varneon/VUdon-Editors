@@ -48,9 +48,16 @@ namespace Varneon.VUdon.Editors.Editor
 
         private InspectorHeader header;
 
+        private static GUIStyle HelpButtonStyle;
+        private static Texture2D HelpIcon;
+
         protected virtual void OnEnable()
         {
             editorDarkMode = EditorGUIUtility.isProSkin;
+
+            HelpIcon = (Texture2D)EditorGUIUtility.IconContent(editorDarkMode ? "d__Help" : "_Help@2x").image;
+
+            HelpButtonStyle = new GUIStyle() { normal = { background = HelpIcon } };
 
             // Try getting the foldout persistence key safely in case it hasn't been implemented
             try
@@ -113,7 +120,7 @@ namespace Varneon.VUdon.Editors.Editor
                     {
                         foldoutHeaders.Add(foldoutHeader);
 
-                        propertyGroups.Add(new FoldoutSerializedPropertyGroup(foldoutHeader, foldoutAttribute.Tooltip));
+                        propertyGroups.Add(new FoldoutSerializedPropertyGroup(foldoutHeader, foldoutAttribute.Tooltip, foldoutAttribute.URL));
                     }
                 }
 
@@ -204,9 +211,20 @@ namespace Varneon.VUdon.Editors.Editor
 
                 if (isFoldout)
                 {
+                    FoldoutSerializedPropertyGroup foldoutGroup = (FoldoutSerializedPropertyGroup)group;
+
                     using (EditorGUI.ChangeCheckScope scope = new EditorGUI.ChangeCheckScope())
                     {
-                        expanded = EditorGUILayout.BeginFoldoutHeaderGroup(expanded, ((FoldoutSerializedPropertyGroup)group).LabelContent);
+                        string helpURL = foldoutGroup.URL;
+
+                        if (string.IsNullOrWhiteSpace(helpURL))
+                        {
+                            expanded = EditorGUILayout.BeginFoldoutHeaderGroup(expanded, foldoutGroup.LabelContent);
+                        }
+                        else
+                        {
+                            expanded = EditorGUILayout.BeginFoldoutHeaderGroup(expanded, foldoutGroup.LabelContent, null, (rect) => Application.OpenURL(helpURL), HelpButtonStyle);
+                        }
 
                         if (scope.changed)
                         {
