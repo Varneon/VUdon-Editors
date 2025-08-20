@@ -14,14 +14,29 @@ namespace Varneon.VUdon.Editors.Editor
 
     public abstract class InspectorBase : Editor
     {
+        /// <summary>
+        /// package.json file of the package for displaying the package name and version in the inspector footer
+        /// </summary>
         [SerializeField]
         private PackageManifest packageManifest;
 
+        /// <summary>
+        /// <see cref="EditorPrefs"/> key under which the persistent state of the inspector will be stored.
+        /// <para>By default the state of the inspector will be reset every time it gets reloaded, provide a key in order to make it persist</para>
+        /// </summary>
+        /// <remarks>
+        /// <para>NOTE: Make sure to provide a unique name separated by forward slashes e.g.</para>
+        /// <para>YOUR_NAME/PRODUCT_NAME/COMPONENT_NAME/InspectorState</para>
+        /// </remarks>
         protected virtual string PersistenceKey => null;
 
         [Obsolete("Use PersistenceKey instead")]
         protected virtual string FoldoutPersistenceKey { get; }
 
+        /// <summary>
+        /// Header to be drawn in the top of the inspector
+        /// <para>Use <see cref="InspectorHeaderBuilder"/> to construct the header with the desired parameters and pass the result of the Build() method to this property</para>
+        /// </summary>
         protected abstract InspectorHeader Header { get; }
 
         private readonly HashSet<ISerializedPropertyGroup> propertyGroups = new HashSet<ISerializedPropertyGroup>();
@@ -32,6 +47,9 @@ namespace Varneon.VUdon.Editors.Editor
 
         private string footer;
 
+        /// <summary>
+        /// Shorthand for <see cref="EditorGUIUtility.isProSkin"/>
+        /// </summary>
         protected bool EditorDarkMode => editorDarkMode;
 
         private bool editorDarkMode;
@@ -44,6 +62,9 @@ namespace Varneon.VUdon.Editors.Editor
         /// <returns></returns>
         protected virtual int CustomPersistentBoolCount => 0;
 
+        /// <summary>
+        /// Custom persistent flags for storing data between inspector reloads
+        /// </summary>
         protected bool[] customPersistentBools = new bool[0];
 
         private InspectorHeader header;
