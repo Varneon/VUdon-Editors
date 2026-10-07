@@ -145,8 +145,6 @@ namespace Varneon.VUdon.Editors.Editor
                     }
                 }
 
-                SerializedProperty property = iterator.Copy();
-
                 if (foldoutHeader == null)
                 {
                     ISerializedPropertyGroup group = propertyGroups.LastOrDefault();
@@ -157,7 +155,12 @@ namespace Varneon.VUdon.Editors.Editor
                     }
                 }
 
-                propertyGroups.Last().Properties.Add(property);
+                if (Attribute.IsDefined(fieldInfo, typeof(FieldIgnoreAttribute)))
+                {
+                    continue;
+                }
+
+                propertyGroups.Last().Properties.Add(iterator.Copy());
 
                 enterChildren = false;
             }
@@ -193,7 +196,7 @@ namespace Varneon.VUdon.Editors.Editor
         protected virtual void OnPreDrawFields() { }
 
         /// <summary>
-        /// Gets called after the inspector is one drawing all of the default fields
+        /// Gets called after the inspector is done drawing all of the default fields
         /// </summary>
         protected virtual void OnPostDrawFields() { }
 
