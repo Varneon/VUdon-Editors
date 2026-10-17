@@ -17,6 +17,15 @@ namespace Varneon.VUdon.Editors.Editor
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
+            // Get the abstract multi attribute
+            MultiPropertyAttribute multiAttribute = (MultiPropertyAttribute)attribute;
+
+            // If the field should be hidden, negate the spacing applied by the layout
+            if (multiAttribute.hide && !multiAttribute.hideCheckFunction())
+            {
+                return -EditorGUIUtility.standardVerticalSpacing;
+            }
+
             float defaultHeight = EditorGUIUtility.singleLineHeight;
             float spacing = EditorGUIUtility.standardVerticalSpacing;
 
@@ -53,7 +62,13 @@ namespace Varneon.VUdon.Editors.Editor
                         case FieldAttributeType.Disable:
                             multiAttribute.disable = true;
                             FieldDisableAttribute disableAttribute = (FieldDisableAttribute)attribute;
-                            multiAttribute.disabledCheckFunction = MultiPropertyAttribute.DisabledCheckFunction(disableAttribute.Logic, disableAttribute.Properties.Select(p => property.serializedObject.FindProperty(p)).ToArray());
+                            multiAttribute.disabledCheckFunction = MultiPropertyAttribute.LogicCheckFunction(disableAttribute.Logic, disableAttribute.Properties.Select(p => property.serializedObject.FindProperty(p)).ToArray());
+                            break;
+
+                        case FieldAttributeType.Hide:
+                            multiAttribute.hide = true;
+                            FieldHideAttribute hideAttribute = (FieldHideAttribute)attribute;
+                            multiAttribute.hideCheckFunction = MultiPropertyAttribute.LogicCheckFunction(hideAttribute.Logic, hideAttribute.Properties.Select(p => property.serializedObject.FindProperty(p)).ToArray());
                             break;
 
                         // Set range for a float or integer field
@@ -76,6 +91,11 @@ namespace Varneon.VUdon.Editors.Editor
 
                 // Set the initialized state
                 multiAttribute.initialized = true;
+            }
+
+            if (multiAttribute.hide && !multiAttribute.hideCheckFunction())
+            {
+                return;
             }
 
             // Override the label with cached one
