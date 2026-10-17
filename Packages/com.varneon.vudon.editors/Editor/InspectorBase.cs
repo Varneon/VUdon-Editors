@@ -37,7 +37,7 @@ namespace Varneon.VUdon.Editors.Editor
         /// Header to be drawn in the top of the inspector
         /// <para>Use <see cref="InspectorHeaderBuilder"/> to construct the header with the desired parameters and pass the result of the Build() method to this property</para>
         /// </summary>
-        protected abstract InspectorHeader Header { get; }
+        protected virtual InspectorHeader Header { get; }
 
         private readonly HashSet<ISerializedPropertyGroup> propertyGroups = new HashSet<ISerializedPropertyGroup>();
 
