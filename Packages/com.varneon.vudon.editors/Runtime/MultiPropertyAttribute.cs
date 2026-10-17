@@ -54,6 +54,11 @@ namespace Varneon.VUdon.Editors
         internal bool disable;
 
         /// <summary>
+        /// Does the property have hide attribute
+        /// </summary>
+        internal bool hide;
+
+        /// <summary>
         /// Should the property warn about null values on an ObjectField
         /// </summary>
         internal bool nullWarning;
@@ -68,8 +73,13 @@ namespace Varneon.VUdon.Editors
         /// </summary>
         internal Func<bool> disabledCheckFunction;
 
+        /// <summary>
+        /// Function for checking whether the field should be hidden or not
+        /// </summary>
+        internal Func<bool> hideCheckFunction;
+
 #if UNITY_EDITOR
-        internal static Func<bool> DisabledCheckFunction(LogicType logic, UnityEditor.SerializedProperty[] properties)
+        internal static Func<bool> LogicCheckFunction(LogicType logic, UnityEditor.SerializedProperty[] properties)
         {
             switch (logic)
             {
