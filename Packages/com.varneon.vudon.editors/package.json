@@ -1,12 +1,15 @@
 {
   "name": "com.varneon.vudon.editors",
   "displayName": "VUdon - Editors",
-  "version": "0.1.0-alpha.7",
-  "unity": "2019.4",
-  "unityRelease": "29f1",
+  "version": "0.2.0",
+  "unity": "2022.3",
+  "unityRelease": "6f1",
   "description": "Custom editors for VUdon prefab ecosystem",
   "author": {
     "name": "Varneon",
     "url": "https://github.com/Varneon"
+  },
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
   }
 }

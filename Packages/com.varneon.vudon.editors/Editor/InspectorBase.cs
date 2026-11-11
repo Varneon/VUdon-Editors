@@ -14,15 +14,30 @@ namespace Varneon.VUdon.Editors.Editor
 
     public abstract class InspectorBase : Editor
     {
+        /// <summary>
+        /// package.json file of the package for displaying the package name and version in the inspector footer
+        /// </summary>
         [SerializeField]
         private PackageManifest packageManifest;
 
+        /// <summary>
+        /// <see cref="EditorPrefs"/> key under which the persistent state of the inspector will be stored.
+        /// <para>By default the state of the inspector will be reset every time it gets reloaded, provide a key in order to make it persist</para>
+        /// </summary>
+        /// <remarks>
+        /// <para>NOTE: Make sure to provide a unique name separated by forward slashes e.g.</para>
+        /// <para>YOUR_NAME/PRODUCT_NAME/COMPONENT_NAME/InspectorState</para>
+        /// </remarks>
         protected virtual string PersistenceKey => null;
 
         [Obsolete("Use PersistenceKey instead")]
         protected virtual string FoldoutPersistenceKey { get; }
 
-        protected abstract InspectorHeader Header { get; }
+        /// <summary>
+        /// Header to be drawn in the top of the inspector
+        /// <para>Use <see cref="InspectorHeaderBuilder"/> to construct the header with the desired parameters and pass the result of the Build() method to this property</para>
+        /// </summary>
+        protected virtual InspectorHeader Header { get; }
 
         private readonly HashSet<ISerializedPropertyGroup> propertyGroups = new HashSet<ISerializedPropertyGroup>();
 
@@ -32,6 +47,9 @@ namespace Varneon.VUdon.Editors.Editor
 
         private string footer;
 
+        /// <summary>
+        /// Shorthand for <see cref="EditorGUIUtility.isProSkin"/>
+        /// </summary>
         protected bool EditorDarkMode => editorDarkMode;
 
         private bool editorDarkMode;
@@ -44,13 +62,23 @@ namespace Varneon.VUdon.Editors.Editor
         /// <returns></returns>
         protected virtual int CustomPersistentBoolCount => 0;
 
+        /// <summary>
+        /// Custom persistent flags for storing data between inspector reloads
+        /// </summary>
         protected bool[] customPersistentBools = new bool[0];
 
         private InspectorHeader header;
 
+        private static GUIStyle HelpButtonStyle;
+        private static Texture2D HelpIcon;
+
         protected virtual void OnEnable()
         {
             editorDarkMode = EditorGUIUtility.isProSkin;
+
+            HelpIcon = (Texture2D)EditorGUIUtility.IconContent(editorDarkMode ? "d__Help" : "_Help@2x").image;
+
+            HelpButtonStyle = new GUIStyle() { normal = { background = HelpIcon } };
 
             // Try getting the foldout persistence key safely in case it hasn't been implemented
             try
@@ -113,11 +141,9 @@ namespace Varneon.VUdon.Editors.Editor
                     {
                         foldoutHeaders.Add(foldoutHeader);
 
-                        propertyGroups.Add(new FoldoutSerializedPropertyGroup(foldoutHeader, foldoutAttribute.Tooltip));
+                        propertyGroups.Add(new FoldoutSerializedPropertyGroup(foldoutHeader, foldoutAttribute.Tooltip, foldoutAttribute.URL));
                     }
                 }
-
-                SerializedProperty property = iterator.Copy();
 
                 if (foldoutHeader == null)
                 {
@@ -129,12 +155,19 @@ namespace Varneon.VUdon.Editors.Editor
                     }
                 }
 
-                propertyGroups.Last().Properties.Add(property);
+                if (Attribute.IsDefined(fieldInfo, typeof(FieldIgnoreAttribute)))
+                {
+                    continue;
+                }
+
+                propertyGroups.Last().Properties.Add(iterator.Copy());
 
                 enterChildren = false;
             }
 
             foldoutStates = new bool[propertyGroups.Count];
+
+            customPersistentBools = new bool[CustomPersistentBoolCount];
 
             if (!string.IsNullOrWhiteSpace(persistenceKey) && EditorPrefs.HasKey(persistenceKey))
             {
@@ -149,8 +182,6 @@ namespace Varneon.VUdon.Editors.Editor
 
                 if(CustomPersistentBoolCount > 0)
                 {
-                    customPersistentBools = new bool[CustomPersistentBoolCount];
-
                     for (int i = 0; i < CustomPersistentBoolCount; i++)
                     {
                         customPersistentBools[i] = (states & (1 << (i + foldoutCount))) != 0;
@@ -165,7 +196,7 @@ namespace Varneon.VUdon.Editors.Editor
         protected virtual void OnPreDrawFields() { }
 
         /// <summary>
-        /// Gets called after the inspector is one drawing all of the default fields
+        /// Gets called after the inspector is done drawing all of the default fields
         /// </summary>
         protected virtual void OnPostDrawFields() { }
 
@@ -173,6 +204,18 @@ namespace Varneon.VUdon.Editors.Editor
         /// Gets called after the inspector has drawn the default footer
         /// </summary>
         protected virtual void OnPostDrawFooter() { }
+
+        /// <summary>
+        /// Gets called when serialized property group will begin to be drawn
+        /// </summary>
+        /// <param name="index"></param>
+        protected virtual void OnPreDrawPropertyGroup(int index) { }
+
+        /// <summary>
+        /// Gets called when serialized property group has finished drawing
+        /// </summary>
+        /// <param name="index"></param>
+        protected virtual void OnPostDrawPropertyGroup(int index) { }
 
         public sealed override void OnInspectorGUI()
         {
@@ -192,9 +235,20 @@ namespace Varneon.VUdon.Editors.Editor
 
                 if (isFoldout)
                 {
+                    FoldoutSerializedPropertyGroup foldoutGroup = (FoldoutSerializedPropertyGroup)group;
+
                     using (EditorGUI.ChangeCheckScope scope = new EditorGUI.ChangeCheckScope())
                     {
-                        expanded = EditorGUILayout.BeginFoldoutHeaderGroup(expanded, ((FoldoutSerializedPropertyGroup)group).LabelContent);
+                        string helpURL = foldoutGroup.URL;
+
+                        if (string.IsNullOrWhiteSpace(helpURL))
+                        {
+                            expanded = EditorGUILayout.BeginFoldoutHeaderGroup(expanded, foldoutGroup.LabelContent);
+                        }
+                        else
+                        {
+                            expanded = EditorGUILayout.BeginFoldoutHeaderGroup(expanded, foldoutGroup.LabelContent, null, (rect) => Application.OpenURL(helpURL), HelpButtonStyle);
+                        }
 
                         if (scope.changed)
                         {
@@ -218,6 +272,8 @@ namespace Varneon.VUdon.Editors.Editor
                         EditorGUI.indentLevel++;
                     }
 
+                    OnPreDrawPropertyGroup(g);
+
                     foreach (SerializedProperty property in group.Properties)
                     {
                         using (EditorGUI.ChangeCheckScope scope = new EditorGUI.ChangeCheckScope())
@@ -230,6 +286,8 @@ namespace Varneon.VUdon.Editors.Editor
                             }
                         }
                     }
+
+                    OnPostDrawPropertyGroup(g);
 
                     if (isFoldout)
                     {

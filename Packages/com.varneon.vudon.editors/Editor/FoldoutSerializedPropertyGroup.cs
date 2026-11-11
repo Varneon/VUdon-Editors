@@ -13,15 +13,19 @@ namespace Varneon.VUdon.Editors
 
         public readonly GUIContent LabelContent;
 
+        public readonly string URL;
+
         public List<SerializedProperty> Properties => _properties;
 
         private readonly List<SerializedProperty> _properties;
 
-        public FoldoutSerializedPropertyGroup(string name, string tooltip = null)
+        public FoldoutSerializedPropertyGroup(string name, string tooltip = null, string url = null)
         {
             LabelContent = new GUIContent(name, tooltip);
 
             _properties = new List<SerializedProperty>();
+
+            URL = url;
         }
     }
 }
